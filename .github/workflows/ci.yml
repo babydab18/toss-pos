@@ -1,0 +1,80 @@
+name: TOSS checks
+on: [push, pull_request]
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: streetside_test
+        ports: ["5432:5432"]
+        options: --health-cmd "pg_isready -U test" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r backend/requirements.lock.txt
+      - run: python -m alembic upgrade head
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql+psycopg://test:test@localhost:5432/streetside_test
+      - run: python -m pytest -q
+        working-directory: backend
+        env:
+          TEST_DATABASE_URL: postgresql+psycopg://test:test@localhost:5432/streetside_test
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci && npm run build && npm test
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - run: pip install -r backend/requirements.lock.txt
+      - run: |
+          python -m alembic upgrade head
+          python -m app.seed
+          python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 > /tmp/streetside-api.log 2>&1 &
+        working-directory: backend
+        env:
+          ADMIN_PASSWORD: test-only-password-123
+          FRONTEND_DIST: ${{ github.workspace }}/frontend/dist
+          ALLOWED_ORIGINS: http://127.0.0.1:8000
+      - run: |
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8000/api/health && break || sleep 1; done
+          npm run test:e2e
+        working-directory: frontend
+        env:
+          E2E_URL: http://127.0.0.1:8000
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t toss-pos .
+      - name: Start PostgreSQL and the hosted image with a fresh upload volume
+        run: |
+          docker network create toss-check
+          docker run -d --name toss-db --network toss-check -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test -e POSTGRES_DB=toss postgres:17-alpine
+          for i in $(seq 1 30); do docker exec toss-db pg_isready -U test && break || sleep 1; done
+          docker run -d --name toss-web --network toss-check -p 8080:10000 -v toss-uploads:/data -e PORT=10000 -e DATABASE_URL=postgresql://test:test@toss-db:5432/toss -e ADMIN_PASSWORD=test-only-password-123 -e RENDER_EXTERNAL_URL=http://localhost:8080 toss-pos
+      - name: Verify startup, frontend, authentication and disk permissions
+        run: |
+          for i in $(seq 1 60); do curl -fsS http://localhost:8080/api/health && break || sleep 1; done
+          curl -fsS http://localhost:8080/api/health
+          curl -fsS http://localhost:8080/kitchen | grep -q '<div id="root">'
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/api/orders)" = 401
+          curl -fsS -H 'Origin: http://localhost:8080' -H 'Content-Type: application/json' --data '{"username":"admin","password":"test-only-password-123"}' http://localhost:8080/api/auth/login
+          docker exec --user app toss-web python -c "from pathlib import Path; p = Path('/data/uploads/check.txt'); p.write_text('ok'); p.unlink()"
+      - name: Container logs
+        if: always()
+        run: docker logs toss-web || true

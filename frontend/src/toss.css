@@ -1,0 +1,1089 @@
+@font-face {
+  font-family: Anton;
+  src: url("/fonts/anton.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 400;
+}
+:root {
+  --bg: #f7f2fa;
+  --panel: #fff;
+  --text: #241b2b;
+  --muted: #786b80;
+  --line: #e5ddea;
+  --soft: #f0e9f5;
+  --accent: #cc20d8;
+  --accent-soft: #f9e7fc;
+  --green: #ae19c5;
+  --shadow: 0 10px 35px #35064012;
+  --yellow: #f3bd18;
+  --pink: #e432f3;
+  --purple: #9a42f5;
+  --neon-green: #a3db42;
+  background: var(--bg);
+  color: var(--text);
+}
+:root.dark {
+  --bg: #0c0b0f;
+  --panel: #141218;
+  --text: #f4eff7;
+  --muted: #a49aad;
+  --line: #2b2434;
+  --soft: #211b29;
+  --accent: #ec40ed;
+  --accent-soft: #351637;
+  --green: #c529dd;
+  --shadow: 0 10px 35px #0005;
+  --yellow: #ffca28;
+  --pink: #f044ef;
+  --purple: #aa57ff;
+  --neon-green: #b2ed57;
+  background: var(--bg);
+  color: var(--text);
+}
+body {
+  background: var(--bg);
+}
+h1,
+h2,
+.food-card h3,
+.ticket header h2 {
+  font-family: Anton, Impact, "Arial Narrow", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+.primary {
+  background: linear-gradient(110deg, #a828e0, #de26c8);
+  box-shadow: 0 3px 12px #bd23d019;
+  border-radius: 8px;
+  color: white;
+}
+.primary:hover:not(:disabled) {
+  background: linear-gradient(110deg, #b439ee, #ed3ada);
+  box-shadow: 0 4px 22px #ce23e536;
+}
+button:focus-visible,
+a:focus-visible {
+  outline-color: var(--pink);
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline-color: var(--purple);
+}
+.sidebar {
+  background: var(--panel);
+  padding-top: 22px;
+  border-right-color: var(--line);
+}
+.brand {
+  display: flex;
+  justify-content: center;
+  min-height: 100px;
+}
+.toss-logo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  color: var(--text);
+  line-height: 1;
+}
+.toss-crown {
+  width: 31px;
+  height: 24px;
+  color: var(--pink);
+  margin-bottom: -4px;
+  transform: rotate(-7deg);
+}
+.toss-wordmark {
+  font-family: Anton, Impact, sans-serif;
+  font-size: 57px;
+  font-style: italic;
+  letter-spacing: -1px;
+  transform: rotate(-5deg);
+  text-shadow:
+    2px 2px 0 var(--accent),
+    -1px -1px 0 var(--accent);
+  padding: 0 9px 6px 2px;
+}
+.toss-period {
+  color: var(--yellow);
+}
+.toss-logo small {
+  font-family: inherit;
+  letter-spacing: 1.35px;
+  font-size: 6px;
+  font-weight: 750;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.brand .toss-logo small {
+  font-size: 6px;
+  letter-spacing: 1.2px;
+}
+.nav-caption {
+  font-size: 9px;
+  letter-spacing: 1.9px;
+  margin-top: 27px;
+  margin-bottom: 12px;
+}
+.sidebar nav a {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 12px;
+  min-height: 48px;
+}
+.sidebar nav a.active,
+.dark .sidebar nav a.active {
+  background: linear-gradient(100deg, #8b22cc28, #d626c70d);
+  color: var(--accent);
+  border-color: #b539d54f;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.sidebar nav a:hover {
+  color: var(--text);
+  background: var(--soft);
+}
+.nav-dot {
+  background: var(--neon-green);
+  box-shadow: 0 0 7px #a6dd4544;
+}
+.service-note {
+  background: var(--soft);
+  border-color: var(--line);
+  border-radius: 8px;
+  color: var(--text);
+}
+.service-note p {
+  color: var(--muted);
+}
+.green-dot {
+  background: var(--neon-green);
+}
+.avatar {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid #ca36dd30;
+}
+.topbar {
+  min-height: 64px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+.truck-tag {
+  color: var(--text);
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+.truck-tag:before {
+  content: "✦";
+  color: var(--yellow);
+  margin-right: 9px;
+}
+.topbar-divider {
+  color: var(--line);
+}
+.live {
+  color: #729a30;
+}
+.dark .live {
+  color: var(--neon-green);
+}
+.menu-pane {
+  padding: 26px 28px 18px;
+}
+.pos-layout {
+  grid-template-columns: minmax(0, 1fr) 340px;
+}
+.cart-pane {
+  height: calc(100dvh - 64px);
+}
+.toss-hero {
+  isolation: isolate;
+  position: relative;
+  min-height: 255px;
+  border: 1px solid #652066;
+  border-radius: 14px;
+  background: #080509;
+  overflow: hidden;
+  margin-bottom: 23px;
+  box-shadow: 0 0 26px #ac1a9710;
+}
+.toss-hero:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(
+      90deg,
+      #080509 0%,
+      #080509eb 22%,
+      #08050935 53%,
+      transparent 80%
+    ),
+    url("/images/toss-feast.png");
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+}
+.toss-hero:after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 3px;
+  background: linear-gradient(90deg, #cc30ee, #fe3daf, #ffa926);
+  z-index: 1;
+}
+.hero-copy {
+  position: relative;
+  padding: 26px 28px 28px;
+  max-width: 63%;
+  color: white;
+}
+.hero-copy .eyebrow {
+  font-size: 9px;
+  letter-spacing: 2.3px;
+  color: #ffca28;
+  margin-bottom: 11px;
+}
+.hero-copy h1 {
+  font-size: 57px;
+  font-style: italic;
+  line-height: 1.02;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  width: max-content;
+}
+.hero-copy h1 > span {
+  display: block;
+}
+.hero-copy h1 > span:last-child {
+  color: #ffca28;
+  text-shadow: 2px 2px #5a1a45;
+}
+.hero-copy p {
+  font-size: 10px;
+  color: #cec2d0;
+  margin-top: 17px;
+  line-height: 1.6;
+}
+.hero-quality {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  border: 1px solid #ffca2860;
+  border-radius: 50%;
+  width: 59px;
+  height: 59px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffca28;
+  background: #080509b5;
+  transform: rotate(10deg);
+}
+.hero-quality strong {
+  font-family: Anton, sans-serif;
+  font-size: 19px;
+}
+.hero-quality small {
+  font-size: 6px;
+  letter-spacing: 1px;
+  line-height: 1.5;
+}
+.hero-caption {
+  position: absolute;
+  bottom: 13px;
+  right: 17px;
+  font-family: Anton, sans-serif;
+  color: #ffea82;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-shadow: 1px 1px #000;
+}
+.eyebrow {
+  color: var(--accent);
+}
+.search-box {
+  border-radius: 8px;
+  background: var(--panel);
+  min-height: 48px;
+}
+.search-box input {
+  font-size: 12px;
+}
+.search-box input::placeholder {
+  color: var(--muted);
+}
+.category-tabs {
+  padding: 18px 0;
+  gap: 8px;
+  scrollbar-color: var(--line) transparent;
+}
+.category-tabs button {
+  font-size: 11px;
+  font-weight: 550;
+  border-radius: 7px;
+  border-color: var(--line);
+  background: var(--panel);
+  padding: 10px 13px;
+  color: var(--muted);
+}
+.category-tabs button.selected {
+  background: linear-gradient(110deg, #8c24cf, #d22ac8);
+  border-color: #e345ef;
+  color: #fff;
+  box-shadow: 0 0 13px #ce2fc52b;
+}
+.category-tabs button:hover:not(.selected) {
+  color: var(--text);
+  border-color: #9841a86b;
+}
+.category-tabs .veg-category:not(.selected) {
+  color: #6c9b2a;
+}
+.dark .category-tabs .veg-category:not(.selected) {
+  color: var(--neon-green);
+}
+.menu-section-heading h2 {
+  font-size: 22px;
+  font-style: italic;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.menu-section-heading h2:before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 19px;
+  background: var(--accent);
+  transform: skew(-12deg);
+  margin-right: 10px;
+  vertical-align: -2px;
+}
+.menu-section-heading > span {
+  color: var(--muted);
+  font-size: 10px;
+}
+.menu-grid {
+  gap: 15px;
+}
+.food-card {
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+.food-card:hover:not(:disabled) {
+  border-color: var(--pink);
+  transform: translateY(-3px);
+  box-shadow: 0 7px 26px #c32cd51f;
+}
+.food-visual {
+  background: radial-gradient(ellipse at center, #352036, #120d16 75%);
+  height: 150px;
+  position: relative;
+}
+.dark .food-visual {
+  filter: none;
+}
+.food-visual:after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 25px;
+  background: linear-gradient(transparent, #120d1622);
+  pointer-events: none;
+}
+.food-card-body {
+  padding: 16px 15px;
+}
+.food-card h3 {
+  font-size: 18px;
+  text-transform: uppercase;
+  line-height: 1.35;
+  letter-spacing: 0.2px;
+}
+.food-card p {
+  font-size: 11px;
+  line-height: 1.6;
+  min-height: 35px;
+  margin-top: 7px;
+  margin-bottom: 17px;
+}
+.food-card-bottom strong {
+  font-size: 20px;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+.food-card-bottom > span {
+  font-size: 10px;
+  font-weight: 550;
+  color: var(--accent);
+}
+.food-card-bottom svg {
+  background: var(--accent-soft);
+  border: 1px solid #d733d63d;
+  width: 29px;
+  height: 29px;
+  border-radius: 7px;
+  padding: 5px;
+}
+.diet-mark {
+  z-index: 3;
+  background: #151017e6;
+  top: 10px;
+  left: 10px;
+  width: 15px;
+  height: 15px;
+  line-height: 13px;
+}
+.veg {
+  color: #a0d655;
+}
+.nonveg {
+  color: #f68a5d;
+}
+.combo-tag {
+  z-index: 3;
+  background: #ffcd2e;
+  color: #201209;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  border-radius: 2px;
+  transform: rotate(-2deg);
+}
+.sold-label {
+  z-index: 5;
+  background: #141015e6;
+  border: 1px solid #ffffff44;
+}
+.food-card.sold-out {
+  opacity: 0.53;
+}
+.menu-photo {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-color: #070508;
+}
+.photo-feast {
+  background-image: url("/images/toss-feast.png");
+  background-size: cover;
+  background-position: 76% 60%;
+}
+.photo-burger {
+  background-image: url("/images/toss-feast.png");
+  background-size: 220% auto;
+  background-position: 77% 62%;
+}
+.photo-tenders {
+  background-image: url("/images/toss-tenders.png");
+  background-size: cover;
+  background-position: center;
+}
+.photo-wrap {
+  background-image: url("/images/toss-wrap.png");
+  background-size: cover;
+  background-position: center;
+}
+.photo-fries {
+  background-image: url("/images/toss-feast.png");
+  background-size: 390% auto;
+  background-position: 100% 74%;
+}
+.toss-illustration {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(ellipse at center, #183528, #0c1613 76%);
+  color: #bce968;
+}
+.drink-illustration {
+  background: radial-gradient(ellipse at center, #173e56, #0e1324 76%);
+  color: #68e0fb;
+}
+.art-main-icon {
+  filter: drop-shadow(0 0 13px #98e74835);
+  transform: rotate(-13deg);
+  position: relative;
+  z-index: 1;
+}
+.art-orbit {
+  width: 130px;
+  height: 130px;
+  border: 1px solid currentColor;
+  opacity: 0.15;
+  border-radius: 50%;
+  position: absolute;
+  transform: rotate(30deg) scaleX(1.2);
+}
+.orbit-two {
+  width: 165px;
+  height: 165px;
+  opacity: 0.08;
+}
+.art-spark {
+  position: absolute;
+  top: 22px;
+  right: 26px;
+  transform: rotate(8deg);
+}
+.art-label {
+  font-family: Anton, sans-serif;
+  font-size: 13px;
+  letter-spacing: 2.5px;
+  position: absolute;
+  right: 13px;
+  bottom: 13px;
+  transform: rotate(-6deg);
+}
+.art-flame {
+  position: absolute;
+  left: 23px;
+  bottom: 22px;
+  opacity: 0.5;
+}
+.menu-bottom-note {
+  font-size: 10px;
+  line-height: 2;
+  color: var(--muted);
+}
+.menu-bottom-note strong {
+  display: block;
+  color: var(--text);
+  font-family: Anton, sans-serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+.menu-bottom-note span {
+  color: var(--muted);
+}
+.cart-heading {
+  padding: 26px 23px 20px;
+  background: linear-gradient(135deg, #ad19cb0b, transparent);
+  border-top: 3px solid var(--accent);
+}
+.cart-heading .eyebrow {
+  font-size: 9px;
+  color: var(--accent);
+  letter-spacing: 1.5px;
+}
+.cart-heading h2 {
+  font-size: 25px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.count-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: inherit;
+  vertical-align: 3px;
+}
+.cart-body {
+  padding-top: 20px;
+}
+.customer-field {
+  font-size: 11px;
+}
+.field input,
+.field textarea,
+.field select {
+  border-radius: 7px;
+  background: var(--panel);
+}
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--muted);
+}
+.empty-cart {
+  color: var(--accent);
+  min-height: 245px;
+}
+.empty-cart > svg {
+  border: 1px solid #cc2cd64a;
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  padding: 18px;
+  background: var(--accent-soft);
+}
+.empty-cart h3 {
+  font-family: Anton, sans-serif;
+  font-size: 21px;
+  text-transform: uppercase;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+.empty-cart p {
+  font-size: 12px;
+}
+.line-name {
+  font-size: 13px;
+}
+.cart-line strong {
+  font-size: 13px;
+}
+.line-detail,
+.line-note {
+  font-size: 11px;
+}
+.cart-footer {
+  background: var(--panel);
+}
+.total strong {
+  font-size: 27px;
+  color: var(--text);
+}
+.send-button {
+  min-height: 50px;
+  text-transform: uppercase;
+  font-weight: 750;
+  letter-spacing: 0.5px;
+  font-size: 12px;
+}
+.cart-footnote {
+  font-size: 9px;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+}
+.standard-page .page-heading h1 {
+  text-transform: uppercase;
+  font-size: 36px;
+}
+.filter-tabs .selected {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.ticket header h2 {
+  font-size: 32px;
+}
+.green-button {
+  background: #567c2a;
+}
+.green-button:hover:not(:disabled) {
+  background: #426321;
+}
+.dark .value-card {
+  background: linear-gradient(120deg, #32143c, #1c1824);
+  color: var(--text);
+  border: 1px solid #5e2566;
+}
+.value-card {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+.value-card > svg {
+  color: var(--accent);
+}
+.chart-bar {
+  background: linear-gradient(#e344e7, #8d3cd0);
+}
+.weekly-chart .chart-bar {
+  background: linear-gradient(#ffca28, #e8792c);
+}
+.stat-card strong {
+  font-family: Anton, sans-serif;
+  font-size: 44px;
+  letter-spacing: 0.5px;
+}
+.stat-card > span svg {
+  color: var(--accent);
+}
+.available {
+  background: #83ba3b1a;
+  color: #608527;
+}
+.dark .available {
+  color: #b2df68;
+  background: #61882825;
+}
+.dark .admin-item-symbol {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.modal {
+  border-color: #91409555;
+  box-shadow: 0 24px 100px #0006;
+  border-radius: 12px;
+}
+.modal > header h2 {
+  font-size: 25px;
+  text-transform: uppercase;
+}
+.modal::backdrop {
+  background: #050107bb;
+  backdrop-filter: blur(5px);
+}
+.confirmation-check,
+.dark .confirmation-check {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.confirmation h1 {
+  font-size: 68px;
+  letter-spacing: 0;
+}
+.toast {
+  background: #8b23ab;
+  border: 1px solid #dc5ae070;
+  box-shadow: 0 8px 30px #0005;
+}
+.toast-error {
+  background: #983d35;
+  border-color: #fbb6a955;
+}
+.login-page {
+  background: var(--bg);
+}
+.login-art {
+  background: radial-gradient(ellipse at 25% 25%, #46104b, #100914 65%);
+  padding: 8vh 12%;
+  min-height: 100dvh;
+}
+.login-art:before {
+  content: "";
+  position: absolute;
+  inset: 45% 0 0;
+  background:
+    linear-gradient(#160b1c00, #160b1c22),
+    url("/images/toss-feast.png") 68% center/cover no-repeat;
+  opacity: 0.6;
+  pointer-events: none;
+}
+.login-art:after {
+  border-color: #ed31ed28;
+  box-shadow:
+    0 0 0 60px #ec28ed04,
+    0 0 0 120px #ec28ed03;
+}
+.login-art .toss-logo {
+  align-self: flex-start;
+  color: white;
+  margin-bottom: 20px;
+  z-index: 1;
+}
+.toss-logo-large .toss-wordmark {
+  font-size: 106px;
+}
+.toss-logo-large .toss-crown {
+  width: 49px;
+  height: 36px;
+}
+.toss-logo-large small {
+  font-size: 8px;
+  color: #e4bbec;
+}
+.login-art .eyebrow {
+  color: #ffca28;
+  position: relative;
+  margin: 28px 0 17px;
+}
+.login-art h1 {
+  font-size: 62px;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  position: relative;
+  line-height: 1.1;
+}
+.login-art p,
+.login-stamp {
+  position: relative;
+}
+.login-art p {
+  font-size: 13px;
+  color: #cab3d0;
+}
+.login-stamp {
+  color: #ffcf42;
+}
+.login-form h1 {
+  font-size: 35px;
+  text-transform: uppercase;
+}
+.login-form .eyebrow {
+  color: var(--accent);
+}
+.login-form > .primary {
+  min-height: 49px;
+}
+.loading-screen {
+  color: var(--accent);
+}
+@media (min-width: 1600px) {
+  .pos-layout {
+    grid-template-columns: minmax(0, 1fr) 370px;
+  }
+  .toss-hero {
+    min-height: 290px;
+  }
+  .hero-copy h1 {
+    font-size: 68px;
+  }
+  .food-visual {
+    height: 180px;
+  }
+}
+@media (max-width: 1250px) {
+  .pos-layout {
+    grid-template-columns: minmax(0, 1fr) 310px;
+  }
+  .menu-pane {
+    padding: 22px;
+  }
+  .hero-copy {
+    padding: 23px 22px;
+    max-width: 72%;
+  }
+  .hero-copy h1 {
+    font-size: 51px;
+  }
+  .toss-hero {
+    min-height: 241px;
+  }
+  .hero-quality {
+    width: 49px;
+    height: 49px;
+    top: 12px;
+    right: 12px;
+  }
+  .hero-quality strong {
+    font-size: 15px;
+  }
+  .hero-quality small {
+    font-size: 5px;
+  }
+  .hero-caption {
+    font-size: 9px;
+  }
+  .cart-heading h2 {
+    font-size: 23px;
+  }
+}
+@media (max-width: 1000px) and (min-width: 761px) {
+  .brand {
+    min-height: 68px;
+  }
+  .toss-crown {
+    width: 20px;
+    height: 17px;
+  }
+  .toss-wordmark {
+    font-size: 34px;
+  }
+  .brand .toss-logo small {
+    display: none;
+  }
+  .sidebar nav {
+    margin-top: 28px;
+  }
+  .hero-copy h1 {
+    font-size: 47px;
+  }
+  .hero-copy {
+    padding-left: 19px;
+  }
+  .hero-quality {
+    display: none;
+  }
+  .hero-caption {
+    font-size: 8px;
+  }
+  .toss-hero:before {
+    background-position: 62% center;
+  }
+  .toss-hero {
+    min-height: 226px;
+  }
+  .menu-pane {
+    padding: 21px 17px;
+  }
+  .menu-grid {
+    gap: 12px;
+  }
+  .food-card h3 {
+    font-size: 17px;
+  }
+  .food-card p {
+    font-size: 11px;
+  }
+  .food-card-body {
+    padding: 13px;
+  }
+  .food-visual {
+    height: 145px;
+  }
+}
+@media (max-width: 760px) {
+  .sidebar {
+    padding-top: 5px;
+    background: var(--panel);
+    border-top: 1px solid #72387866;
+  }
+  .sidebar nav a {
+    min-height: 52px;
+    font-size: 8px;
+    border: none;
+    border-radius: 6px;
+  }
+  .sidebar nav a.active,
+  .dark .sidebar nav a.active {
+    box-shadow: none;
+    background: #bd25d01a;
+  }
+  .topbar {
+    min-height: 58px;
+  }
+  .topbar .truck-tag {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+  .topbar .truck-tag:before {
+    margin-right: 5px;
+  }
+  .pos-layout {
+    display: block;
+  }
+  .menu-pane {
+    padding: 18px 16px 85px;
+  }
+  .toss-hero {
+    min-height: 228px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+  }
+  .hero-copy {
+    padding: 22px 19px 26px;
+    max-width: 76%;
+  }
+  .hero-copy h1 {
+    font-size: 48px;
+    line-height: 1.05;
+  }
+  .hero-copy .eyebrow {
+    font-size: 7px;
+    letter-spacing: 1.8px;
+    margin-bottom: 12px;
+  }
+  .hero-copy p {
+    font-size: 9px;
+    max-width: 155px;
+    margin-top: 14px;
+  }
+  .toss-hero:before {
+    background-size: auto 100%;
+    background-position: 63% center;
+    background-image:
+      linear-gradient(90deg, #080509e8 0%, #080509b0 25%, transparent 75%),
+      url("/images/toss-feast.png");
+  }
+  .hero-quality {
+    display: none;
+  }
+  .hero-caption {
+    font-size: 7px;
+    right: 11px;
+    bottom: 11px;
+    letter-spacing: 1px;
+  }
+  .category-tabs {
+    padding: 14px 0 17px;
+  }
+  .category-tabs button {
+    font-size: 10px;
+    padding: 10px;
+    min-height: 44px;
+  }
+  .menu-section-heading h2 {
+    font-size: 20px;
+  }
+  .menu-section-heading > span {
+    font-size: 9px;
+  }
+  .menu-grid {
+    gap: 12px;
+  }
+  .food-visual {
+    height: 133px;
+  }
+  .food-card-body {
+    padding: 12px;
+  }
+  .food-card h3 {
+    font-size: 17px;
+    line-height: 1.35;
+  }
+  .food-card p {
+    font-size: 11px;
+    line-height: 1.55;
+    margin-bottom: 13px;
+    min-height: 0;
+  }
+  .food-card-bottom strong {
+    font-size: 19px;
+  }
+  .food-card-bottom > span {
+    font-size: 9px;
+  }
+  .food-card-bottom svg {
+    width: 27px;
+    height: 27px;
+  }
+  .combo-tag {
+    font-size: 7px;
+    padding: 5px;
+  }
+  .art-main-icon {
+    width: 64px;
+    height: 64px;
+  }
+  .art-label {
+    font-size: 11px;
+  }
+  .cart-pane {
+    height: 92dvh;
+    max-height: 92dvh;
+  }
+  .cart-heading {
+    padding-top: 21px;
+    border-radius: 20px 20px 0 0;
+  }
+  .cart-heading h2 {
+    font-size: 25px;
+  }
+  .mobile-cart {
+    background: linear-gradient(110deg, #9227dc, #df27c5);
+    border: 1px solid #e97bea66;
+    box-shadow: 0 5px 25px #07030999;
+  }
+  .standard-page .page-heading h1 {
+    font-size: 31px;
+  }
+  .modal > header h2 {
+    font-size: 23px;
+  }
+  .login-form h1 {
+    font-size: 34px;
+  }
+  .menu-bottom-note {
+    font-size: 9px;
+  }
+  .menu-bottom-note strong {
+    font-size: 13px;
+  }
+  .hero-copy h1 > span:last-child {
+    text-shadow: 2px 2px #52143d;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1000px) {
+  .sidebar .brand > .toss-logo {
+    display: inline-flex;
+  }
+}

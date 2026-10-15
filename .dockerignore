@@ -1,0 +1,17 @@
+.git
+.venv
+.tools
+**/node_modules
+**/dist
+**/__pycache__
+**/.pytest_cache
+**/*.pyc
+**/*.db*
+**/*.sqlite*
+**/.env
+**/.env.*
+**/uploads
+**/test-results
+**/playwright-report
+**/*.tsbuildinfo
+docs

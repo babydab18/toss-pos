@@ -1,0 +1,40 @@
+# Paid resources. Review Render's cost estimate before creating this Blueprint.
+# Publish the contents of food-truck-pos as the root of their own GitHub repo.
+services:
+  - type: web
+    name: toss-pos
+    runtime: docker
+    plan: 0.5c-512mb
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    numInstances: 1
+    healthCheckPath: /api/health
+    autoDeployTrigger: checksPass
+    disk:
+      name: toss-uploads
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: toss-db
+          property: connectionString
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: UPLOAD_DIR
+        value: /data/uploads
+
+databases:
+  - name: toss-db
+    plan: 0.1c-256mb
+    region: singapore
+    postgresMajorVersion: "17"
+    databaseName: toss
+    user: toss
+    diskSizeGB: 1
+    ipAllowList: []
