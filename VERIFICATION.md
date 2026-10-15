@@ -17,7 +17,7 @@ Browser coverage includes separately customized versions of the same dish, requi
 
 The administration checks found and verified a fix for an Add item button that could be clicked before category loading completed. Image tests found and verified explicit WebP MIME registration for Windows. Desktop and phone screenshots were inspected; quantity controls and cart height were adjusted.
 
-Local database tests and browser runs used isolated SQLite databases. Docker and PostgreSQL executables were unavailable on this host, so the Compose image build and PostgreSQL runtime behavior were **not executed here**. The included CI workflow runs the API suite against a disposable PostgreSQL 17 service; that workflow has not yet run on GitHub. Native Safari/iOS and Android devices were not tested; phone coverage used Chromium emulation.
+Local database tests and browser runs used isolated SQLite databases. Docker and PostgreSQL executables were unavailable on this host, so the Compose image build and PostgreSQL runtime behavior were **not executed here**. The included CI workflow runs the API suite against a disposable PostgreSQL 17 service; that workflow subsequently passed on GitHub (see the publication record below). Native Safari/iOS and Android devices were not tested; phone coverage used Chromium emulation.
 
 The backend test run emits a dependency deprecation warning for Starlette's current httpx test adapter; there were no failing tests. Production startup does not use that adapter.
 
@@ -40,9 +40,25 @@ checks cover managed database URL conversion, allowed public/custom origins,
 frontend routes and private-file rejection, and secure cookies/origin protection.
 All 26 backend tests passed. The frontend production build passed again.
 
-The Render and CI files parse as YAML; they have not yet been validated by a
-Render deployment. The cloud Docker image, Linux privilege-drop bootstrap and
-PostgreSQL startup cannot be executed on this Windows host without Docker. A new
-GitHub Actions container job checks those paths after pushing the repository.
-No public URL or hosted resources have been created, and nothing has been pushed
-to GitHub. The source archive excludes local runtime data and dependencies.
+The Render and CI files parse as YAML; the Blueprint has not yet been exercised
+on Render. Docker and PostgreSQL startup were subsequently checked on GitHub
+Actions because Docker is unavailable on this local Windows host. The source
+archive excludes local runtime data and dependencies.
+
+## GitHub publication - 2026-10-15
+
+Published the complete source to https://github.com/babydab18/toss-pos.
+The project preview and setup page is live at https://babydab18.github.io/toss-pos/.
+Both URLs returned HTTP 200 without authentication. The page was checked at
+1440px and 390px widths with no horizontal overflow or failed images.
+
+[GitHub CI run](https://github.com/babydab18/toss-pos/actions/runs/38792476211)
+passed all three jobs: backend tests against PostgreSQL 17, frontend build and
+component/browser tests, and a Docker image build/startup check against PostgreSQL.
+The container check also verified unauthenticated order access is denied, login
+works, and the application user can write the persistent upload directory.
+
+The operational POS has not been deployed to Render yet. The repository includes
+a deployment shortcut; applying it requires a Render account, a new administrator
+password and acceptance of the selected hosting charges. The GitHub Pages page
+is a project showcase, not the operational POS.
