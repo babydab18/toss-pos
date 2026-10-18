@@ -14,15 +14,15 @@ export default function TossFoodArt({ item }: { item: Item }) {
   const name = item.name.toLowerCase();
   if (item.is_combo)
     return <div className="menu-photo photo-feast" aria-hidden="true" />;
-  if (/burger|stack/.test(name) && !item.vegetarian)
+  if (/burger|stack|crispy chick|nash cheese|steak bite|smash chick/.test(name) && !item.vegetarian)
     return <div className="menu-photo photo-burger" aria-hidden="true" />;
-  if (/tender|wing|bucket/.test(name))
+  if (/tender|wing|bucket|joint/.test(name))
     return <div className="menu-photo photo-tenders" aria-hidden="true" />;
   if (/wrap/.test(name) && !item.vegetarian)
     return <div className="menu-photo photo-wrap" aria-hidden="true" />;
   if (/fries/.test(name))
     return <div className="menu-photo photo-fries" aria-hidden="true" />;
-  const drink = /lagoon|mojito|mocktail|soda|lassi|chai/.test(name);
+  const drink = /lagoon|mojito|mocktail|soda|lassi|chai|tossy blue|cool toss|pink venom/.test(name);
   const Icon = drink
     ? CupSoda
     : item.vegetarian

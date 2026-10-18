@@ -148,26 +148,26 @@ export default function App() {
         <span className="nav-caption">YOUR WORKSPACE</span>
         <nav>
           {canOrder && (
-            <NavLink to="/" end>
+            <NavLink to="/" end title="Take an order">
               <LayoutGrid size={21} />
               Take an order
             </NavLink>
           )}
-          <NavLink to="/kitchen">
+          <NavLink to="/kitchen" title="Kitchen">
             <ChefHat size={21} />
             Kitchen <span className="nav-dot" />
           </NavLink>
-          <NavLink to="/orders">
+          <NavLink to="/orders" title="Orders">
             <ClipboardList size={21} />
             Orders
           </NavLink>
           {user.role === "admin" && (
             <>
-              <NavLink to="/admin">
+              <NavLink to="/admin" title="Menu & team">
                 <SlidersHorizontal size={21} />
                 Menu & team
               </NavLink>
-              <NavLink to="/analytics">
+              <NavLink to="/analytics" title="Overview">
                 <ChartNoAxesCombined size={21} />
                 Overview
               </NavLink>

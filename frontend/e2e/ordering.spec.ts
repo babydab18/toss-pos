@@ -41,7 +41,7 @@ test("customize, persist a draft, send, update another device, and complete", as
   await cart(page);
   const customer = `E2E ${testInfo.project.name} ${Date.now()}`;
   await page.getByLabel("Customer / pickup name").fill(customer);
-  await expect(page.locator(".total")).toContainText("₹368");
+  await expect(page.locator(".total")).toContainText("₹377");
   await page.reload();
   await cart(page);
   await expect(page.getByLabel("Customer / pickup name")).toHaveValue(customer);
@@ -82,6 +82,7 @@ test("unknown server outcome preserves the draft and retries one order", async (
   await page
     .getByRole("button", { name: "Add Cheese Fries", exact: true })
     .click();
+  await page.getByRole("button", { name: /Add to order/ }).click();
   await cart(page);
   const customer = `Retry ${testInfo.project.name} ${Date.now()}`;
   await page.getByLabel("Customer / pickup name").fill(customer);

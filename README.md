@@ -2,7 +2,11 @@
 
 A mobile-first React/TypeScript POS with a FastAPI API, PostgreSQL persistence, configurable food modifiers and a live kitchen board. Includes order corrections, cancellation history, staff roles, menu administration, image uploads and operational analytics. **There is no payment functionality.**
 
-This directory is self-contained and can be the root of its own GitHub repository. The surrounding drone project is unrelated. The current TOSS branding and imported menu are documented in [TOSS-MENU.md](TOSS-MENU.md). [Architecture and API map](ARCHITECTURE.md) · [Executed checks and verification limits](VERIFICATION.md).
+This is the independent TOSS POS repository, stored locally at `C:\Users\ranvi\toss-pos`. The current TOSS branding and imported menu are documented in [TOSS-MENU.md](TOSS-MENU.md). [Architecture and API map](ARCHITECTURE.md) · [Executed checks and verification limits](VERIFICATION.md).
+
+## Use the POS on an iPad over local Wi-Fi
+
+The owner’s chosen setup uses a local computer/server and an iPad on the same network. Follow [LOCAL-IPAD.md](LOCAL-IPAD.md); no paid hosting is needed. The revised 18 October menu contains 27 items, and existing installations can apply it with `docker compose exec api python -m app.toss_menu --update-existing` after a backup.
 
 ## Deploy the working POS
 

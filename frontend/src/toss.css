@@ -883,6 +883,9 @@ select:focus {
   .sidebar nav {
     margin-top: 28px;
   }
+  .sidebar nav a {
+    font-size: 0;
+  }
   .hero-copy h1 {
     font-size: 47px;
   }

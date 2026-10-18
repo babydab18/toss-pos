@@ -4,7 +4,7 @@ Executed locally on Windows with Python 3.11 and a project-local Node.js 22 runt
 
 | Check | Result |
 | --- | --- |
-| Backend API/database/WebSocket/hosting tests | 26 passed |
+| Backend API/database/WebSocket/hosting tests | 28 passed |
 | Frontend component/API/storage tests | 6 passed |
 | Playwright desktop + phone + tablet-sized Chromium | 13 passed |
 | TypeScript + Vite production build | Passed; main JavaScript bundle approximately 102 KB gzip |
@@ -62,3 +62,26 @@ The operational POS has not been deployed to Render yet. The repository includes
 a deployment shortcut; applying it requires a Render account, a new administrator
 password and acceptance of the selected hosting charges. The GitHub Pages page
 is a project showcase, not the operational POS.
+
+## Owner menu revision and local iPad setup - 2026-10-18
+
+Applied the revised poster to the seed menu and the existing local database:
+27 items in 11 categories, three portion sizes, eight sauces, revised prices and
+renamed dishes/drinks/combos. The user confirmed the two Paneer Wrap prices and
+that Paneer Chick Loaded Fries contains chicken. Removed dishes are archived.
+
+All 28 backend tests passed; the final six menu tests passed after the joint-portion
+label change. Tests cover every poster price, safe upgrade from the previous menu,
+retired-option rejection, photo/availability retention, stable IDs and unchanged
+historical orders. The existing local database was backed up under `.tools/` before
+upgrading; a before/after digest confirmed staff, sessions and order tables were
+unchanged. No customer/staff data or database backups are published.
+
+All 13 browser tests passed with the revised menu. A subsequent tablet navigation
+fix was checked by rebuilding and rerunning the three responsive tests. The final
+production build passed. The GitHub project preview uses a fresh menu screenshot.
+
+The owner selected an iPad plus local computer/server. LOCAL-IPAD.md documents
+same-network access, exact allowed origins, Docker startup, menu upgrades and
+backups. These checks use Chromium tablet emulation, not a physical iPad or Safari.
+The owner's computer/network has not been configured remotely.

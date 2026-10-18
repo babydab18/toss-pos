@@ -15,6 +15,7 @@ test("correct an active ticket, show kitchen changes, and cancel with a reason",
   await page
     .getByRole("button", { name: "Add Cheese Fries", exact: true })
     .click();
+  await page.getByRole("button", { name: /Add to order/ }).click();
   if (await page.getByRole("button", { name: /View order/ }).isVisible())
     await page.getByRole("button", { name: /View order/ }).click();
   const customer = `Correction ${Date.now()}`;
