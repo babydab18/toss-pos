@@ -6,7 +6,30 @@ stay powered on and awake during service. After downloading/building the softwar
 normal ordering can run without an internet connection as long as local Wi-Fi
 and the server remain available.
 
-## Quick start on the existing Windows laptop (no Docker)
+## New Windows computer: one-time setup without Docker
+
+1. Download the repository ZIP and **Extract All**. Move the extracted folder to
+   a permanent location you own, such as `Documents/TOSS POS` (not Program Files).
+2. Double-click **Setup TOSS POS.cmd**. Stay connected to the internet.
+3. Setup finds or installs Python and Node.js through Windows Package Manager,
+   installs dependencies, builds the website, and initializes the local database.
+   Windows may ask you to approve a prerequisite installer. If App Installer is
+   missing, install/update it from Microsoft Store and rerun setup.
+4. Enter and confirm your own admin password when asked (12+ characters).
+   Characters are hidden as you type. Existing installations keep their passwords.
+5. When setup says complete, double-click **Run TOSS POS** on the desktop.
+6. Open the laptop website with the launcher button. On an iPad/phone, join the
+   same Wi-Fi and open the address displayed. Sign in as `admin`.
+
+No GitHub account, Git, Docker, `.env` editing, or command typing is required.
+This installer is Windows-only. Do not move/delete the folder after setup; the
+shortcut and database depend on it. If setup fails, read its error and rerun it.
+Close the running POS before rerunning setup. Existing databases are backed up to
+`backups/` before migration; existing menu edits and passwords are preserved.
+Python/Node installation may require administrator approval or a restart. Allow
+Python on **private networks** if Windows Firewall asks; do not disable the firewall.
+
+## Daily start on Windows (no Docker)
 
 Double-click **Run TOSS POS** on the desktop, or `Run TOSS POS.cmd` in the project
 folder. Keep the launcher open. Click **Open POS on this laptop**; on your phone
