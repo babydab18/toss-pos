@@ -6,6 +6,26 @@ stay powered on and awake during service. After downloading/building the softwar
 normal ordering can run without an internet connection as long as local Wi-Fi
 and the server remain available.
 
+## Quick start on the existing Windows laptop (no Docker)
+
+Double-click **Run TOSS POS** on the desktop, or `Run TOSS POS.cmd` in the project
+folder. Keep the launcher open. Click **Open POS on this laptop**; on your phone
+or iPad, join the same Wi-Fi and type the address displayed in the launcher.
+Use your existing login. If multiple addresses appear, use the Wi-Fi IPv4 address
+shown by `ipconfig`. After changing Wi-Fi, click **Restart / refresh Wi-Fi address**.
+
+This launcher uses the existing `.venv`, compiled `frontend/dist`, and
+`backend/street-side.db`; it does not install dependencies, pull GitHub updates,
+or read `.env`. It preserves the local database and uploaded images. Close it
+using **Stop POS and close** after service. Restarting Windows requires opening
+the shortcut again. Back up the SQLite database while the server is stopped.
+
+If a phone cannot connect, permit the Python server on your trusted private
+network in Windows Firewall. Guest/campus Wi-Fi can block device-to-device access;
+use a trusted home router or hotspot instead. No router port forwarding is needed.
+The shortcut is for this already installed laptop; use the setup below for a new
+computer. GitHub Actions is not involved in local startup.
+
 ## 1. Prepare the server computer
 
 Install Docker Desktop (or Docker Engine with Compose on Linux), download this
