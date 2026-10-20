@@ -1090,3 +1090,9 @@ select:focus {
     display: inline-flex;
   }
 }
+
+.sms-opt-in > span { display: flex; align-items: center; gap: 10px; }
+.field.sms-opt-in input[type="checkbox"] {
+  width: 20px; height: 20px; min-width: 20px; min-height: 20px;
+  padding: 0; margin: 0; flex: 0 0 20px; accent-color: #c026d3;
+}

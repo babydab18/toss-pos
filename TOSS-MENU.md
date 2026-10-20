@@ -1,6 +1,6 @@
-# TOSS menu - owner revision, 18 October 2026
+# TOSS menu - owner revision, 19 October 2026
 
-The owner-supplied poster dated 2026-10-18 is the current source. The POS contains
+The owner-supplied poster dated 2026-10-19 is the current source. The POS contains
 27 items across 11 categories. Prices below are rupees; stored prices are paise.
 The existing black, magenta, purple and yellow interface is retained.
 
@@ -8,7 +8,7 @@ The existing black, magenta, purple and yellow interface is retained.
 | --- | --- | --- |
 | Crispy Tenders | 2 / 4 / 6 pieces | 149 / 199 / 259 |
 | Wings | 2 / 4 / 6 pieces | 139 / 179 / 229 |
-| Fried Chicken Joints | 2 / 4 / 6 pieces | 119 / 149 / 219 |
+| Fried Chicken Drumsticks | 2 / 4 / 6 pieces | 119 / 149 / 219 |
 | Burgers | Crispy Chick / Nash Cheese / Steak Bite / Smash Chick / Triple Stack | 169 / 189 / 199 / 199 / 299 |
 | Loaded Fries | Chicken Loaded / Nashville Cheese / Paneer Chick Loaded | 169 / 189 / 179 |
 | Wraps | Chicken Loaded / Nashville Chicken / Paneer / Mushroom | 129 / 129 / 119 / 109 |
@@ -25,8 +25,10 @@ Descriptions are brief labels, not ingredient or allergen specifications.
 ## Modifiers and combos
 
 Portions require one selection. The old 8-piece options are removed.
-Sauce tossing is optional and costs 29 on tenders, wings, fried chicken joints,
-loaded fries, wraps, veg burgers, veg wraps and veg fries, as printed.
+One sauce is optional and free on tenders, wings, fried chicken drumsticks,
+loaded fries, wraps, veg burgers, veg wraps and veg fries. Choose Drizzle, Dry rub
+(sauce on the side), or Toss with the sauce; leave both blank for a plain item.
+This follows the owner's explicit free-sauce instruction.
 Burger extra cheese costs 29 and an extra dip costs 19.
 
 Eight signature sauces: Cajun Mayo, Peri Peri Mayo, Chilli Garlic Mayo, Buffalo

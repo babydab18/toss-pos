@@ -21,3 +21,5 @@ playwright-report/
 
 backups/
 *.dump
+
+!.env.sms.example

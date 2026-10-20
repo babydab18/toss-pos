@@ -16,7 +16,7 @@ for name in files:
         raise RuntimeError(f'Cannot safely export {name}')
     if any(part in {'.git', '.tools', '.venv', 'node_modules', 'uploads', 'dist'} for part in path.relative_to(root).parts):
         raise RuntimeError(f'Runtime or dependency files are tracked: {name}')
-    if ((path.name == '.env' or path.name.startswith('.env.')) and path.name != '.env.example') or path.suffix in {'.db', '.sqlite', '.sqlite3', '.pem', '.key'}:
+    if ((path.name == '.env' or path.name.startswith('.env.')) and path.name not in {'.env.example', '.env.sms.example'}) or path.suffix in {'.db', '.sqlite', '.sqlite3', '.pem', '.key'}:
         raise RuntimeError(f'Private data or credentials are tracked: {name}')
 output.parent.mkdir(exist_ok=True)
 with ZipFile(output, 'w', ZIP_DEFLATED) as archive:

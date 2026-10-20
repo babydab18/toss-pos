@@ -1,5 +1,5 @@
 from typing import Literal
-from pydantic import BaseModel, Field, ConfigDict, model_validator
+from pydantic import BaseModel, Field, ConfigDict, model_validator, field_validator
 
 
 class StrictModel(BaseModel):
@@ -64,6 +64,25 @@ class LineInput(StrictModel):
 
 class OrderInput(StrictModel):
     customer: str = Field(default='', max_length=100)
+    phone: str = Field(default='', max_length=30)
+    sms_opt_in: bool = False
+
+    @model_validator(mode='after')
+    def sms_phone(self):
+        if self.sms_opt_in and not self.phone.startswith('+'):
+            raise ValueError('For SMS, enter the phone number with + and country code')
+        return self
+
+
+    @field_validator('phone')
+    @classmethod
+    def valid_phone(cls, value):
+        import re
+        value = re.sub(r'[ ()-]', '', value)
+        if value and not re.fullmatch(r'\+?[1-9][0-9]{6,14}', value):
+            raise ValueError('Enter a valid phone number, including country code for SMS')
+        return value
+
     instructions: str = Field(default='', max_length=1000)
     items: list[LineInput] = Field(min_length=1, max_length=100)
 

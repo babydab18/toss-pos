@@ -31,6 +31,7 @@ test("customize, persist a draft, send, update another device, and complete", as
   await expect(page.getByRole("alert")).toContainText("Choose");
   await page.getByLabel("2 pieces", { exact: false }).check();
   await page.getByLabel(/Cajun Mayo/).check();
+  await page.getByLabel(/Dry rub/).check();
   await page.getByLabel("Special instructions").fill("Less oil");
   await page.getByRole("button", { name: /Add to order/ }).click();
   await page
@@ -41,7 +42,8 @@ test("customize, persist a draft, send, update another device, and complete", as
   await cart(page);
   const customer = `E2E ${testInfo.project.name} ${Date.now()}`;
   await page.getByLabel("Customer / pickup name").fill(customer);
-  await expect(page.locator(".total")).toContainText("₹377");
+  await page.getByLabel("Phone number (optional)").fill("+919876543210");
+  await expect(page.locator(".total")).toContainText("₹348");
   await page.reload();
   await cart(page);
   await expect(page.getByLabel("Customer / pickup name")).toHaveValue(customer);
@@ -65,6 +67,11 @@ test("customize, persist a draft, send, update another device, and complete", as
   await ticket.getByRole("button", { name: "Mark ready" }).click();
   await page.getByRole("button", { name: "Track order" }).click();
   const tracked = page.locator(".ticket").filter({ hasText: customer });
+  await expect(tracked).toContainText("Ready to collect");
+  await expect(tracked).toContainText("+919876543210");
+  await tracked.getByRole("button", { name: "Still preparing", exact: true }).click();
+  await expect(tracked.getByText("Preparing", { exact: true })).toBeVisible();
+  await tracked.getByRole("button", { name: "Mark ready", exact: true }).click();
   await expect(tracked).toContainText("Ready to collect");
   await tracked.getByRole("button", { name: "Complete pickup" }).click();
   await expect(tracked.getByText("Completed", { exact: true })).toBeVisible();

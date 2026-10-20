@@ -11,7 +11,20 @@ from .realtime import hub
 from .config import allowed_origins
 from .frontend import FrontendFiles
 
-app = FastAPI(title='StreetSide Operations API', version='1.0.0')
+from contextlib import asynccontextmanager, suppress
+
+@asynccontextmanager
+async def lifespan(app):
+    from .sms import worker
+    task = asyncio.create_task(worker())
+    try:
+        yield
+    finally:
+        task.cancel()
+        with suppress(asyncio.CancelledError):
+            await task
+
+app = FastAPI(lifespan=lifespan, title='StreetSide Operations API', version='1.0.0')
 origins = allowed_origins()
 
 

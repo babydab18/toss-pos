@@ -16,7 +16,7 @@ export default function TossFoodArt({ item }: { item: Item }) {
     return <div className="menu-photo photo-feast" aria-hidden="true" />;
   if (/burger|stack|crispy chick|nash cheese|steak bite|smash chick/.test(name) && !item.vegetarian)
     return <div className="menu-photo photo-burger" aria-hidden="true" />;
-  if (/tender|wing|bucket|joint/.test(name))
+  if (/tender|wing|bucket|drumstick/.test(name))
     return <div className="menu-photo photo-tenders" aria-hidden="true" />;
   if (/wrap/.test(name) && !item.vegetarian)
     return <div className="menu-photo photo-wrap" aria-hidden="true" />;

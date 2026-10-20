@@ -212,7 +212,7 @@ export default function Orders({
           <Search size={18} />
           <input
             aria-label="Search orders"
-            placeholder="Ticket # or customer"
+            placeholder="Ticket #, customer or phone"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -265,6 +265,13 @@ export default function Orders({
                     </span>
                     <h2>#{String(order.number).padStart(3, "0")}</h2>
                     <p>{order.customer || "Walk-in order"}</p>
+                    {user.role !== "kitchen" && order.phone && <p>{order.phone}</p>}
+                    {user.role !== "kitchen" && order.sms_opt_in && <p className="modifier-note">SMS: {{
+                      not_requested: "Will notify when ready", pending: "Queued", sending: "Sending / outcome pending",
+                      accepted: "Accepted by SMS provider", disabled: "Not sent - SMS not configured",
+                      failed: "Not sent - provider rejected", unknown: "Outcome unknown - check provider before contacting again",
+                      cancelled: "Paused - order still preparing"
+                    }[order.sms_status] || order.sms_status}</p>}
                   </div>
                   <div className="ticket-meta">
                     <span className={`status status-${order.status}`}>
@@ -333,6 +340,12 @@ export default function Orders({
                       <History size={16} />
                     </button>
                   </div>
+                  {user.role === "admin" && order.status === "ready" && (
+                    <button className="secondary" disabled={!!busy}
+                      onClick={() => update(order, "preparing", "Admin returned ready order to still preparing")}>
+                      <RefreshCw size={16} /> Still preparing
+                    </button>
+                  )}
                   {canNext && (
                     <button
                       className={`primary ${order.status === "preparing" ? "green-button" : ""}`}

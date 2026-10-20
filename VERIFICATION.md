@@ -85,3 +85,14 @@ The owner selected an iPad plus local computer/server. LOCAL-IPAD.md documents
 same-network access, exact allowed origins, Docker startup, menu upgrades and
 backups. These checks use Chromium tablet emulation, not a physical iPad or Safari.
 The owner's computer/network has not been configured remotely.
+
+
+## Owner menu and order update - 19 October 2026
+
+- Renamed joints to drumsticks; free sauce and Drizzle / Dry rub (sauce on the side) / Toss on the previously sauce-tossed items.
+- Optional validated customer phone, explicit order-ready SMS opt-in, admin-only ready-to-preparing reversal with history and cleared ready timestamp.
+- Twilio adapter defaults disabled. Mocked acceptance/rejection/timeouts and duplicate prevention tested; no live SMS sent. Provider acceptance is not delivery confirmation.
+- Backend suite: 34 passed before two additional SMS regression tests; subsequent targeted suite: 9 passed, including both new tests and legacy idempotency.
+- Production TypeScript/Vite build and 6 frontend unit tests passed; all 13 Playwright desktop/tablet/mobile workflows passed. Phone order screenshot inspected. A checkbox sizing issue found in the desktop screenshot was fixed and rebuilt.
+- Local database backed up, migration applied and poster updater run with 0 added items. Existing account/order/history columns compared before/after and unchanged; drumstick ID preserved.
+- Local launcher restarted and health endpoint verified. Live provider credentials and real handset delivery remain untested/unconfigured.

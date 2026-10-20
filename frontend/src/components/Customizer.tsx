@@ -10,6 +10,10 @@ export function selectionError(item: Item, selected: number[]) {
     if (count < group.min_select || count > group.max_select)
       return `Choose ${group.min_select}–${group.max_select} options for ${group.name}`;
   }
+  const sauce = item.groups.find((g) => g.name === "Free sauce");
+  const style = item.groups.find((g) => g.name === "Sauce preparation");
+  if (sauce && style && sauce.options.some((o) => selected.includes(o.id)) !== style.options.some((o) => selected.includes(o.id)))
+    return "Choose both a free sauce and its preparation, or leave both blank for plain.";
   return "";
 }
 export default function Customizer({

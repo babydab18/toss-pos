@@ -27,6 +27,8 @@ import TossFoodArt from "../components/TossFoodArt";
 export const freshDraft = (): Draft => ({
   items: [],
   customer: "",
+  phone: "",
+  sms_opt_in: false,
   instructions: "",
   submissionKey: newKey(),
   pending: false,
@@ -73,6 +75,8 @@ export default function POS({
     setDraft({
       ...freshDraft(),
       customer: editing.customer,
+      phone: editing.phone || "",
+      sms_opt_in: editing.sms_opt_in || false,
       instructions: editing.instructions,
       editing: {
         id: editing.id,
@@ -159,6 +163,8 @@ export default function POS({
     try {
       const body = {
         customer: draft.customer,
+        phone: draft.phone || "",
+        sms_opt_in: draft.sms_opt_in || false,
         instructions: draft.instructions,
         items: draft.items.map(
           ({ menu_item_id, quantity, option_ids, instructions }) => ({
@@ -246,6 +252,17 @@ export default function POS({
             onChange={(e) => change({ customer: e.target.value })}
             maxLength={100}
           />
+        </label>
+        <label className="field customer-field">
+          Phone number (optional)
+          <input type="tel" autoComplete="tel" placeholder="Include country code, e.g. +91"
+            value={draft.phone || ""} disabled={locked} maxLength={30}
+            onChange={(e) => change({ phone: e.target.value })} />
+        </label>
+        <label className="field customer-field sms-opt-in">
+          <span><input type="checkbox" checked={draft.sms_opt_in || false} disabled={locked}
+            onChange={(e) => change({ sms_opt_in: e.target.checked })} /> Customer wants an order-ready SMS</span>
+          <small>Requires SMS setup and a phone number with country code.</small>
         </label>
         {!draft.items.length ? (
           <div className="empty-cart">

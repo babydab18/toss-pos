@@ -34,17 +34,18 @@ def test_toss_import_preserves_orders_and_is_idempotent(client, payload):
 def test_toss_confirmed_portion_prices_and_sauce(client):
     install()
     menu = client.get('/api/menu').json()
-    for name, prices in [('Crispy Tenders', [149, 199, 259]), ('Wings', [139, 179, 229]), ('Fried Chicken Joints', [119, 149, 219])]:
+    for name, prices in [('Crispy Tenders', [149, 199, 259]), ('Wings', [139, 179, 229]), ('Fried Chicken Drumsticks', [119, 149, 219])]:
         item = next(i for i in menu['items'] if i['name'] == name)
         portion = next(g for g in item['groups'] if g['min_select'] == 1)
-        sauce = next(g for g in item['groups'] if g['name'] == 'Sauce tossed')
+        sauce = next(g for g in item['groups'] if g['name'] == 'Free sauce')
+        style = next(g for g in item['groups'] if g['name'] == 'Sauce preparation')
         assert submit(client, {'items': [{'menu_item_id': item['id'], 'quantity': 1}]}).status_code == 422
         assert len(portion['options']) == len(prices) == 3
         assert len(sauce['options']) == 8
         for option, price in zip(portion['options'], prices):
-            response = submit(client, {'items': [{'menu_item_id': item['id'], 'quantity': 1, 'option_ids': [option['id'], sauce['options'][0]['id']]}]})
+            response = submit(client, {'items': [{'menu_item_id': item['id'], 'quantity': 1, 'option_ids': [option['id'], sauce['options'][0]['id'], style['options'][0]['id']]}]})
             assert response.status_code == 201, response.text
-            assert response.json()['total'] == (price + 29) * 100
+            assert response.json()['total'] == price * 100
 
 
 def test_toss_extras_combos_and_category_specific_prices(client):
@@ -121,7 +122,7 @@ def test_every_revised_poster_price_and_sauce_assignment(client):
     expected = {
         'Burgers': {'Crispy Chick':169, 'Nash Cheese':189, 'Steak Bite':199, 'Smash Chick':199, 'Triple Stack':299},
         'Crispy Tenders': {'Crispy Tenders':149}, 'Wings': {'Wings':139},
-        'Fried Chicken Joints': {'Fried Chicken Joints':119},
+        'Fried Chicken Drumsticks': {'Fried Chicken Drumsticks':119},
         'Loaded Fries': {'Chicken Loaded Fries':169, 'Nashville Cheese Fries':189, 'Paneer Chick Loaded Fries':179},
         'Wraps': {'Chicken Loaded Wrap':129, 'Nashville Chicken Wrap':129, 'Paneer Wrap':119, 'Mushroom Wrap':109},
         'Mocktails': {'Tossy Blue':79, 'Cool Toss':79, 'Pink Venom':79},
@@ -135,8 +136,8 @@ def test_every_revised_poster_price_and_sauce_assignment(client):
         category = categories[item['category_id']]
         actual[category][item['name']] = item['price'] // 100
         if category not in ('Burgers', 'Mocktails', 'Combo Deals'):
-            sauce = next(g for g in item['groups'] if g['name'] == 'Sauce tossed')
-            assert {o['price'] for o in sauce['options']} == {2900}
+            sauce = next(g for g in item['groups'] if g['name'] == 'Free sauce')
+            assert {o['price'] for o in sauce['options']} == {0}
             assert {o['name'] for o in sauce['options']} == {'Cajun Mayo', 'Peri Peri Mayo', 'Chilli Garlic Mayo', 'Buffalo Sauce', 'Nashville Hot Cheese', 'Fiery Glaze', 'Honey Mustard', 'Garlic Blaze'}
         if category == 'Combo Deals':
             assert {o['name'] for o in item['groups'][0]['options']} == {'Tossy Blue', 'Cool Toss', 'Pink Venom'}

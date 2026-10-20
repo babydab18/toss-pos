@@ -25,7 +25,7 @@ def iso(value):
 
 def serialize(order):
     return {'id': order.id, 'number': order.number, 'day': str(order.day), 'created_at': iso(order.created_at),
-            'ready_at': iso(order.ready_at), 'customer': order.customer, 'instructions': order.instructions,
+            'ready_at': iso(order.ready_at), 'customer': order.customer, 'phone': order.phone, 'sms_opt_in': order.sms_opt_in, 'sms_status': order.sms_status, 'instructions': order.instructions,
             'status': order.status, 'total': order.total, 'version': order.version,
             'items': [{'id': i.id, 'menu_item_id': i.menu_item_id, 'name': i.name, 'base_price': i.base_price,
                        'unit_price': i.unit_price, 'quantity': i.quantity, 'instructions': i.instructions,
@@ -54,6 +54,12 @@ def build_lines(data, db):
             for option in selected:
                 known.add(option.id)
                 modifiers.append(SelectedModifier(option_id=option.id, group_name=group.name, name=option.name, price=option.price))
+        sauce_groups = {g.name: g for g in item.groups if not g.archived}
+        if 'Free sauce' in sauce_groups and 'Sauce preparation' in sauce_groups:
+            has_sauce = any(o.id in chosen for o in sauce_groups['Free sauce'].options)
+            has_style = any(o.id in chosen for o in sauce_groups['Sauce preparation'].options)
+            if has_sauce != has_style:
+                raise HTTPException(422, 'Choose both a free sauce and its preparation, or leave both blank for plain.')
         if chosen != known:
             raise HTTPException(422, 'A modifier is no longer valid. Customize the item again.')
         lines.append(OrderItem(menu_item_id=item.id, name=item.name, base_price=item.price,
@@ -90,7 +96,7 @@ def list_orders(q: str = Query('', max_length=100), status: str = '', limit: int
     elif status:
         query = query.where(Order.status == status)
     if q:
-        conditions = [Order.customer.ilike(f'%{q}%'), Order.id == q]
+        conditions = [Order.customer.ilike(f'%{q}%'), Order.phone.ilike(f'%{q}%'), Order.id == q]
         if q.lstrip('#').isdigit():
             conditions.append(Order.number == int(q.lstrip('#')))
         query = query.where(or_(*conditions))
@@ -105,7 +111,11 @@ def get_order(id: str, user: User = Depends(current_user), db: Session = Depends
 
 @router.post('', status_code=201)
 async def create_order(data: OrderInput, idempotency_key: str = Header(min_length=16, max_length=100), user: User = Depends(roles('admin', 'cashier')), db: Session = Depends(get_db)):
-    fingerprint = hashlib.sha256(json.dumps(data.model_dump(), sort_keys=True).encode()).hexdigest()
+    fingerprint_data = data.model_dump()
+    if not data.phone and not data.sms_opt_in:
+        fingerprint_data.pop('phone')
+        fingerprint_data.pop('sms_opt_in')
+    fingerprint = hashlib.sha256(json.dumps(fingerprint_data, sort_keys=True).encode()).hexdigest()
     def replay(existing):
         if existing.fingerprint != fingerprint or existing.created_by != user.id:
             raise HTTPException(409, 'Submission key already used for a different order')
@@ -121,7 +131,7 @@ async def create_order(data: OrderInput, idempotency_key: str = Header(min_lengt
         from sqlalchemy.dialects.sqlite import insert
     statement = insert(DailyCounter).values(day=day, number=1).on_conflict_do_update(index_elements=['day'], set_={'number': DailyCounter.number + 1}).returning(DailyCounter.number)
     number = db.scalar(statement)
-    order = Order(day=day, number=number, customer=data.customer, instructions=data.instructions, items=lines,
+    order = Order(day=day, number=number, customer=data.customer, phone=data.phone, sms_opt_in=data.sms_opt_in, instructions=data.instructions, items=lines,
                   total=sum(i.unit_price * i.quantity for i in lines), created_by=user.id,
                   idempotency_key=idempotency_key, fingerprint=fingerprint,
                   history=[OrderHistory(actor_id=user.id, status='new', reason='Sent to kitchen')])
@@ -146,12 +156,13 @@ async def edit_order(id: str, data: OrderEdit, user: User = Depends(roles('admin
         raise HTTPException(409, 'Only new or preparing orders can be corrected')
     before = serialize(order)
     order.items = build_lines(data, db)
-    order.customer, order.instructions = data.customer, data.instructions
+    order.customer, order.phone, order.instructions = data.customer, data.phone, data.instructions
+    order.sms_opt_in = data.sms_opt_in
     order.total = sum(i.unit_price * i.quantity for i in order.items)
     order.version += 1  # Also version changes that only replace child records.
     order.history.append(OrderHistory(actor_id=user.id, status=order.status, reason=data.reason,
-        changes={'before': {'items': before['items'], 'customer': before['customer'], 'instructions': before['instructions'], 'total': before['total']},
-                 'after': {'items': serialize(order)['items'], 'customer': order.customer, 'instructions': order.instructions, 'total': order.total}}))
+        changes={'before': {'items': before['items'], 'customer': before['customer'], 'phone': before['phone'], 'instructions': before['instructions'], 'total': before['total']},
+                 'after': {'items': serialize(order)['items'], 'customer': order.customer, 'phone': order.phone, 'sms_opt_in': order.sms_opt_in, 'sms_status': order.sms_status, 'instructions': order.instructions, 'total': order.total}}))
     commit_update(db)
     await hub.broadcast('order.updated', id=order.id)
     return serialize(order)
@@ -161,16 +172,27 @@ async def edit_order(id: str, data: OrderEdit, user: User = Depends(roles('admin
 async def change_status(id: str, data: StatusInput, user: User = Depends(current_user), db: Session = Depends(get_db)):
     order = find_order(id, db)
     check_version(order, data.version)
-    allowed = {'new': ['preparing', 'cancelled'], 'preparing': ['ready', 'cancelled'], 'ready': ['completed', 'cancelled']}
+    allowed = {'new': ['preparing', 'cancelled'], 'preparing': ['ready', 'cancelled'], 'ready': ['completed', 'cancelled', 'preparing']}
     if data.status not in allowed.get(order.status, []):
         raise HTTPException(409, 'Invalid order status transition')
+    reverting = order.status == 'ready' and data.status == 'preparing'
+    if reverting and user.role != 'admin':
+        raise HTTPException(403, 'Only an admin can return a ready order to preparing')
     if user.role == 'kitchen' and data.status not in ('preparing', 'ready'):
         raise HTTPException(403, 'Kitchen staff can only prepare or mark ready')
     if data.status == 'cancelled' and not data.reason.strip():
         raise HTTPException(422, 'A cancellation reason is required')
+    if reverting:
+        order.ready_at = None
+        if order.sms_status == 'pending':
+            order.sms_status = 'cancelled'
+        data.reason = data.reason or 'Admin returned ready order to still preparing'
     order.status = data.status
     if data.status == 'ready':
         order.ready_at = now()
+        if order.sms_opt_in and order.phone and order.sms_status in ('not_requested', 'disabled', 'cancelled'):
+            from .sms import configured
+            order.sms_status = 'pending' if configured() else 'disabled'
     order.history.append(OrderHistory(actor_id=user.id, status=data.status, reason=data.reason))
     commit_update(db)
     await hub.broadcast('order.updated', id=order.id)

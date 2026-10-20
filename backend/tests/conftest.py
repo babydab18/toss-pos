@@ -18,7 +18,8 @@ from app.auth import attempts, hasher
 
 
 @pytest.fixture(autouse=True)
-def database():
+def database(monkeypatch):
+    monkeypatch.setenv("SMS_PROVIDER", "disabled")
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     attempts.clear()

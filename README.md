@@ -143,3 +143,5 @@ Implementation references: [FastAPI WebSockets](https://fastapi.tiangolo.com/adv
 ## Windows setup without Docker
 
 Download and extract the ZIP, keep the folder in a permanent location, then double-click **Setup TOSS POS.cmd**. It installs prerequisites, builds the app, asks for an admin password, and creates a **Run TOSS POS** desktop shortcut. See [the Windows setup guide](LOCAL-IPAD.md) for details.
+
+Optional customer phone numbers, admin ready-to-preparing reversal, and configurable order-ready texts are described in [SMS.md](SMS.md). SMS is disabled until configured.

@@ -2,7 +2,7 @@
 
 The importer only archives the original demo dishes; it does not delete orders,
 staff, uploaded photos, or other dishes. Existing TOSS records change only with the explicit update_existing option.
-Source: owner-supplied poster dated 2026-10-18.
+Source: owner-supplied poster dated 2026-10-19.
 """
 from sqlalchemy import select
 from .db import SessionLocal
@@ -15,7 +15,7 @@ DEMO_NAMES = {
 }
 SAUCES = ['Cajun Mayo', 'Peri Peri Mayo', 'Chilli Garlic Mayo', 'Buffalo Sauce',
           'Fiery Glaze', 'Nashville Hot Cheese', 'Honey Mustard', 'Garlic Blaze']
-CATEGORIES = ['Burgers', 'Crispy Tenders', 'Wings', 'Fried Chicken Joints', 'Loaded Fries',
+CATEGORIES = ['Burgers', 'Crispy Tenders', 'Wings', 'Fried Chicken Drumsticks', 'Loaded Fries',
               'Wraps', 'Mocktails', 'Veg Burgers', 'Veg Wraps', 'Veg Fries', 'Combo Deals']
 
 
@@ -40,8 +40,8 @@ def import_menu(db, archive_demo=True, update_existing=False):
     categories = {}
     for position, name in enumerate(CATEGORIES):
         category = db.scalar(select(Category).where(Category.name == name, Category.archived == False))
-        if not category and update_existing and name == 'Fried Chicken Joints':
-            category = db.scalar(select(Category).where(Category.name == 'Fried Chicken Bucket', Category.archived == False))
+        if not category and update_existing and name == 'Fried Chicken Drumsticks':
+            category = db.scalar(select(Category).where(Category.name.in_(['Fried Chicken Joints', 'Fried Chicken Bucket']), Category.archived == False))
             if category:
                 category.name = name
         if not category:
@@ -52,8 +52,12 @@ def import_menu(db, archive_demo=True, update_existing=False):
 
     def group(name, options, required=False, maximum=1):
         found = db.scalar(select(ModifierGroup).where(ModifierGroup.name == name, ModifierGroup.archived == False))
-        if not found and update_existing and name == 'Joint portion':
-            found = db.scalar(select(ModifierGroup).where(ModifierGroup.name == 'Bucket portion', ModifierGroup.archived == False))
+        if not found and update_existing and name == 'Drumstick portion':
+            found = db.scalar(select(ModifierGroup).where(ModifierGroup.name.in_(['Joint portion', 'Bucket portion']), ModifierGroup.archived == False))
+            if found:
+                found.name = name
+        if not found and update_existing and name == 'Free sauce':
+            found = db.scalar(select(ModifierGroup).where(ModifierGroup.name == 'Sauce tossed', ModifierGroup.archived == False))
             if found:
                 found.name = name
         if found:
@@ -73,12 +77,13 @@ def import_menu(db, archive_demo=True, update_existing=False):
         db.flush()
         return found
 
-    toss = group('Sauce tossed', [(name, 29) for name in SAUCES])
+    toss = group('Free sauce', [(name, 0) for name in SAUCES])
+    style = group('Sauce preparation', [(name, 0) for name in ['Drizzle', 'Dry rub (sauce on the side)', 'Toss']])
     dip = group('Extra dip', [(name, 19) for name in SAUCES])
     cheese = group('Extra cheese', [('Add extra cheese', 29)])
     tenders = group('Tender portion', [('2 pieces', 0), ('4 pieces', 50), ('6 pieces', 110)], True)
     wings = group('Wing portion', [('2 pieces', 0), ('4 pieces', 40), ('6 pieces', 90)], True)
-    bucket = group('Joint portion', [('2 pieces', 0), ('4 pieces', 30), ('6 pieces', 100)], True)
+    bucket = group('Drumstick portion', [('2 pieces', 0), ('4 pieces', 30), ('6 pieces', 100)], True)
     drink = group('Combo mocktail', [(name, 0) for name in ['Tossy Blue', 'Cool Toss', 'Pink Venom']], True)
 
     # name, rupee price, category, description, vegetarian base, modifier groups
@@ -88,25 +93,25 @@ def import_menu(db, archive_demo=True, update_existing=False):
         ('Steak Bite', 199, 'Burgers', 'The TOSS chicken steak burger.', False, [cheese, dip]),
         ('Smash Chick', 199, 'Burgers', 'The TOSS smash chicken burger.', False, [cheese, dip]),
         ('Triple Stack', 299, 'Burgers', 'The TOSS triple-stack burger.', False, [cheese, dip]),
-        ('Crispy Tenders', 149, 'Crispy Tenders', 'Crispy chicken tenders. Choose 2, 4 or 6 pieces.', False, [tenders, toss]),
-        ('Wings', 139, 'Wings', 'Chicken wings. Choose 2, 4 or 6 pieces.', False, [wings, toss]),
-        ('Fried Chicken Joints', 119, 'Fried Chicken Joints', 'Fried chicken joints. Choose 2, 4 or 6 pieces.', False, [bucket, toss]),
-        ('Chicken Loaded Fries', 169, 'Loaded Fries', 'Chicken loaded fries from the TOSS menu.', False, [toss]),
-        ('Nashville Cheese Fries', 189, 'Loaded Fries', 'Nashville cheese fries from the TOSS menu.', True, [toss]),
-        ('Paneer Chick Loaded Fries', 179, 'Loaded Fries', 'Paneer Chick Loaded Fries, as named on the printed menu.', False, [toss]),
-        ('Chicken Loaded Wrap', 129, 'Wraps', 'Chicken loaded wrap from the main wraps menu.', False, [toss]),
-        ('Nashville Chicken Wrap', 129, 'Wraps', 'Nashville chicken wrap from the main wraps menu.', False, [toss]),
-        ('Paneer Wrap', 119, 'Wraps', 'Paneer wrap from the main wraps menu.', True, [toss]),
-        ('Mushroom Wrap', 109, 'Wraps', 'Mushroom wrap from the main wraps menu.', True, [toss]),
+        ('Crispy Tenders', 149, 'Crispy Tenders', 'Crispy chicken tenders. Choose 2, 4 or 6 pieces.', False, [tenders, toss, style]),
+        ('Wings', 139, 'Wings', 'Chicken wings. Choose 2, 4 or 6 pieces.', False, [wings, toss, style]),
+        ('Fried Chicken Drumsticks', 119, 'Fried Chicken Drumsticks', 'Fried chicken drumsticks. Choose 2, 4 or 6 pieces.', False, [bucket, toss, style]),
+        ('Chicken Loaded Fries', 169, 'Loaded Fries', 'Chicken loaded fries from the TOSS menu.', False, [toss, style]),
+        ('Nashville Cheese Fries', 189, 'Loaded Fries', 'Nashville cheese fries from the TOSS menu.', True, [toss, style]),
+        ('Paneer Chick Loaded Fries', 179, 'Loaded Fries', 'Paneer Chick Loaded Fries, as named on the printed menu.', False, [toss, style]),
+        ('Chicken Loaded Wrap', 129, 'Wraps', 'Chicken loaded wrap from the main wraps menu.', False, [toss, style]),
+        ('Nashville Chicken Wrap', 129, 'Wraps', 'Nashville chicken wrap from the main wraps menu.', False, [toss, style]),
+        ('Paneer Wrap', 119, 'Wraps', 'Paneer wrap from the main wraps menu.', True, [toss, style]),
+        ('Mushroom Wrap', 109, 'Wraps', 'Mushroom wrap from the main wraps menu.', True, [toss, style]),
         ('Tossy Blue', 79, 'Mocktails', 'The blue TOSS mocktail.', True, []),
         ('Cool Toss', 79, 'Mocktails', 'The green TOSS mocktail.', True, []),
         ('Pink Venom', 79, 'Mocktails', 'The pink TOSS mocktail.', True, []),
-        ('Mushroom Burger', 109, 'Veg Burgers', 'Mushroom burger from the veg menu.', True, [toss]),
-        ('Paneer Burger', 129, 'Veg Burgers', 'Paneer burger from the veg menu.', True, [toss]),
-        ('Paneer Wrap', 109, 'Veg Wraps', 'Paneer wrap from the veg wraps menu.', True, [toss]),
-        ('Mushroom Wrap', 109, 'Veg Wraps', 'Mushroom wrap from the veg wraps menu.', True, [toss]),
-        ('Peri Peri Fries', 79, 'Veg Fries', 'Peri peri fries from the veg fries menu.', True, [toss]),
-        ('Cheese Fries', 99, 'Veg Fries', 'Cheese fries from the veg fries menu.', True, [toss]),
+        ('Mushroom Burger', 109, 'Veg Burgers', 'Mushroom burger from the veg menu.', True, [toss, style]),
+        ('Paneer Burger', 129, 'Veg Burgers', 'Paneer burger from the veg menu.', True, [toss, style]),
+        ('Paneer Wrap', 109, 'Veg Wraps', 'Paneer wrap from the veg wraps menu.', True, [toss, style]),
+        ('Mushroom Wrap', 109, 'Veg Wraps', 'Mushroom wrap from the veg wraps menu.', True, [toss, style]),
+        ('Peri Peri Fries', 79, 'Veg Fries', 'Peri peri fries from the veg fries menu.', True, [toss, style]),
+        ('Cheese Fries', 99, 'Veg Fries', 'Cheese fries from the veg fries menu.', True, [toss, style]),
         ('Toss Bite - Combo 1', 329, 'Combo Deals', 'Crispy Chick Burger + fries + mocktail.', False, [drink]),
         ('Toss Wings - Combo 2', 349, 'Combo Deals', '4 wings + loaded fries + mocktail.', False, [drink]),
         ('Toss Wrap - Combo 3', 379, 'Combo Deals', 'Chicken Loaded Wrap + peri peri fries + mocktail.', False, [drink]),
@@ -114,7 +119,7 @@ def import_menu(db, archive_demo=True, update_existing=False):
     previous_names = {
         'Crispy Chick': 'Chicken Cluck Burger', 'Nash Cheese': 'Nashville Cheese Burger',
         'Steak Bite': 'Chicken Steak Burger', 'Smash Chick': 'Smash Chicken Burger',
-        'Triple Stack': 'Triple Steak Stack', 'Fried Chicken Joints': 'Fried Chicken Bucket',
+        'Triple Stack': 'Triple Steak Stack', 'Fried Chicken Drumsticks': 'Fried Chicken Bucket',
         'Paneer Chick Loaded Fries': 'Paneer Loaded Fries',
         'Tossy Blue': 'Blue Lagoon', 'Cool Toss': 'Mint Mojito', 'Pink Venom': 'Strawberry Mocktail',
         'Toss Bite - Combo 1': 'Combo 1', 'Toss Wings - Combo 2': 'Combo 2', 'Toss Wrap - Combo 3': 'Combo 3',
@@ -124,7 +129,7 @@ def import_menu(db, archive_demo=True, update_existing=False):
         category = categories[category_name]
         item = db.scalar(select(MenuItem).where(MenuItem.name == name, MenuItem.category_id == category.id).limit(1))
         if not item and update_existing and name in previous_names:
-            item = db.scalar(select(MenuItem).where(MenuItem.name == previous_names[name], MenuItem.category_id == category.id).limit(1))
+            item = db.scalar(select(MenuItem).where(MenuItem.name.in_(['Fried Chicken Joints', 'Fried Chicken Bucket'] if name == 'Fried Chicken Drumsticks' else [previous_names[name]]), MenuItem.category_id == category.id).limit(1))
         if item and not update_existing:
             continue
         if not item:
@@ -141,7 +146,7 @@ def import_menu(db, archive_demo=True, update_existing=False):
 
 if __name__ == '__main__':
     import argparse
-    parser = argparse.ArgumentParser(description='Import the 2026-10-18 TOSS poster menu.')
+    parser = argparse.ArgumentParser(description='Import the 2026-10-19 TOSS poster menu.')
     parser.add_argument('--update-existing', action='store_true', help='Apply revised poster prices/names/options and archive retired dishes. Back up the database first.')
     args = parser.parse_args()
     with SessionLocal() as db:

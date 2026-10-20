@@ -37,6 +37,8 @@ export type Line = {
 export type Draft = {
   items: Line[];
   customer: string;
+  phone: string;
+  sms_opt_in: boolean;
   instructions: string;
   submissionKey: string;
   pending: boolean;
@@ -50,8 +52,11 @@ export type Order = {
   day: string;
   created_at: string;
   ready_at: string | null;
+  sms_status: string;
   status: Status;
   customer: string;
+  phone: string;
+  sms_opt_in: boolean;
   instructions: string;
   total: number;
   version: number;
